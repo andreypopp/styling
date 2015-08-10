@@ -7,6 +7,13 @@
   "author": "Andrey Popp <8mayday@gmail.com>",
   "license": "MIT",
   "repository": "andreypopp/styling",
+  "keywords": [
+    "webpack",
+    "webpack-loader",
+    "css-modules",
+    "css",
+    "style"
+  ],
   "dependencies": {
     "deepmerge": "^0.2.10"
   }
