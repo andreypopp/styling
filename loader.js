@@ -67,7 +67,7 @@ function valueOf(value) {
   }
 }
 
-var CAMEL_CASE_TO_DASH_CASE = /([a-z])([A-Z])/g;
+var CAMEL_CASE_TO_DASH_CASE = /([a-z]|^)([A-Z])/g;
 
 function propValueOf(prop) {
   return prop.replace(CAMEL_CASE_TO_DASH_CASE, '$1-$2').toLowerCase();
