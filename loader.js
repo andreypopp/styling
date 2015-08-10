@@ -25,7 +25,7 @@ function styling(content) {
           if (style['@@styling'].hasOwnProperty(prop)) {
             var value = style['@@styling'][prop];
             value = valueOf(value);
-            if (value && typeof value === 'object') {
+            if (value && typeof value === 'object' && !Array.isArray(value)) {
               stylesheet.push(styleFromObject(key, prop, value));
             } else {
               self[prop] = value;
@@ -45,7 +45,14 @@ function styleFromObject(name, state, style) {
   css += ':local(.' + name + (state ? ':' + state : '') + ') {\n';
   for (var prop in style) {
     if (style.hasOwnProperty(prop)) {
-      css += '  ' + propValueOf(prop) + ': ' + valueOf(style[prop]) + ';\n';
+      var value = valueOf(style[prop]);
+      if (Array.isArray(value)) {
+        for (var i = 0; i < value.length; i++) {
+          css += '  ' + propValueOf(prop) + ': ' + value[i] + ';\n';
+        }
+      } else {
+        css += '  ' + propValueOf(prop) + ': ' + value + ';\n';
+      }
     }
   }
   css += '}';
