@@ -20,7 +20,11 @@ Now you can write styles with the full power of JavaScript, `Button.styling.js`:
 
     export let self = styling({
       backgroundColor: 'red',
-      borderWidth: 1 + 10
+      borderWidth: 1 + 10,
+
+      hover: {
+        borderWidth: 100
+      }
     })
 
 And consume them, `Button.js`:

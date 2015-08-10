@@ -5,5 +5,9 @@
   "main": "index.js",
   "webpackLoader": "loader.js",
   "author": "Andrey Popp <8mayday@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "repository": "andreypopp/styling",
+  "dependencies": {
+    "deepmerge": "^0.2.10"
+  }
 }
