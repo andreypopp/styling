@@ -1,0 +1,9 @@
+{
+  "name": "styling",
+  "version": "1.0.0",
+  "description": "Style components with JavaScript",
+  "main": "index.js",
+  "webpackLoader": "loader.js",
+  "author": "Andrey Popp <8mayday@gmail.com>",
+  "license": "MIT"
+}
