@@ -1,6 +1,6 @@
 {
   "name": "styling",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "Style components with JavaScript",
   "main": "index.js",
   "webpackLoader": "loader.js",
