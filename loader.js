@@ -32,7 +32,7 @@ function styling(content) {
             }
           }
         }
-        stylesheet.push(styleFromObject(key, null, self));
+        stylesheet.unshift(styleFromObject(key, null, self));
       }
     }
   }
