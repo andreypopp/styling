@@ -56,7 +56,7 @@ Add the following configuration to `webpack.config.js`:
 
 Now you can write styles with the full power of JavaScript, `Button.styling.js`:
 
-    import styling import 'styling'
+    import styling from 'styling'
 
     export let self = styling({
       backgroundColor: 'red',
