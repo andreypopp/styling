@@ -12,6 +12,9 @@ Why
 * Rich ecosystem of ready to use [npm][] packages: for example you can use
   [color][] for color manipulation.
 
+* Compatability with the existent CSS tools such as [autoprefixer][] and a ton
+  of other [PostCSS][] transforms.
+
 How
 ---
 
@@ -102,3 +105,5 @@ configure it to do so:
 [extract-text-webpack-plugin]: https://github.com/webpack/extract-text-webpack-plugin
 [color]: https://www.npmjs.com/package/color
 [CSS module]: https://github.com/css-modules/css-modules
+[autoprefixer]: https://github.com/postcss/autoprefixer
+[PostCSS]: http://postcss.parts/
