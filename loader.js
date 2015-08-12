@@ -1,128 +1,106 @@
 /**
- * @copyright 2013-2015, Facebook, Inc.
  * @copyright 2015, Andrey Popp
  */
 
-var vm = require('vm');
+var path          = require('path');
+var Module        = require('module');
+var Styling       = require('./Styling');
+var renderStyling = require('./renderStyling');
 
-function styling(content) {
-	if(this.cacheable) {
-	  this.cacheable();
-	}
+var NodeTemplatePlugin    = require('webpack/lib/node/NodeTemplatePlugin');
+var NodeTargetPlugin      = require('webpack/lib/node/NodeTargetPlugin');
+var LibraryTemplatePlugin = require('webpack/lib/LibraryTemplatePlugin');
+var SingleEntryPlugin     = require('webpack/lib/SingleEntryPlugin');
+var LimitChunkCountPlugin = require('webpack/lib/optimize/LimitChunkCountPlugin');
 
-  var exports = {};
-  var sandbox = {
-    module: {exports: exports},
-    exports: exports,
-    require: require
-  };
-  vm.createContext(sandbox);
-  vm.runInContext(content, sandbox);
 
-  var stylesheet = [];
-
-  for (var key in sandbox.module.exports) {
-    if (sandbox.module.exports.hasOwnProperty(key)) {
-      var keyStylesheet = [];
-      var style = sandbox.module.exports[key];
-      if (style && style['@@styling']) {
-        if (typeof style['@@styling'] === 'string') {
-          keyStylesheet.push(style['@@styling']);
-        } else {
-          var self = {};
-          for (var prop in style['@@styling']) {
-            if (style['@@styling'].hasOwnProperty(prop)) {
-              var value = style['@@styling'][prop];
-              value = valueOf(value);
-              if (value && typeof value === 'object' && !Array.isArray(value)) {
-                keyStylesheet.push(renderStyle(key, prop, value));
-              } else {
-                self[prop] = value;
-              }
-            }
-          }
-          keyStylesheet.unshift(renderStyle(key, null, self));
-        }
-        stylesheet = stylesheet.concat(keyStylesheet);
-      }
-    }
-  }
-
-  return stylesheet.join('\n\n');
-}
-
-function renderStyle(name, state, style) {
-  var css = '';
-  css += renderSelector(name, state) + ' {\n';
-  for (var prop in style) {
-    if (style.hasOwnProperty(prop)) {
-      var value = valueOf(style[prop]);
-      if (Array.isArray(value)) {
-        for (var i = 0; i < value.length; i++) {
-          css += '  ' + renderProp(prop, value[i]) + '\n';
-        }
-      } else {
-        css += '  ' + renderProp(prop, value) + '\n';
-      }
-    }
-  }
-  css += '}';
-  return css;
-}
-
-function renderProp(key, value) {
-  key = key.replace(CAMEL_CASE_TO_DASH_CASE, '$1-$2').toLowerCase();
-  value = valueOf(value);
-
-  var isNonNumeric = isNaN(value);
-  if (isNonNumeric || value === 0 ||
-      IS_UNITLESS_NUMBER.hasOwnProperty(key) && IS_UNITLESS_NUMBER[key]) {
-    value = '' + value;
-  } else {
-    value = value + 'px';
-  }
-  return key + ': ' + value + ';';
-}
-
-function renderSelector(name, state) {
-  return ':local(.' + name + (state ? ':' + state : '') + ')';
-}
-
-function valueOf(value) {
-  if (value != null) {
-    return value.valueOf();
-  } else {
-    return value;
-  }
-}
-
-var CAMEL_CASE_TO_DASH_CASE = /([a-z]|^)([A-Z])/g;
-
-var IS_UNITLESS_NUMBER = {
-  boxFlex: true,
-  boxFlexGroup: true,
-  columnCount: true,
-  flex: true,
-  flexGrow: true,
-  flexPositive: true,
-  flexShrink: true,
-  flexNegative: true,
-  fontWeight: true,
-  lineClamp: true,
-  lineHeight: true,
-  opacity: true,
-  order: true,
-  orphans: true,
-  tabSize: true,
-  widows: true,
-  zIndex: true,
-  zoom: true,
-
-  // SVG-related properties
-  fillOpacity: true,
-  strokeDashoffset: true,
-  strokeOpacity: true,
-  strokeWidth: true,
+module.exports = function styling(content) {
+  this.cacheable();
+  return content;
 };
 
-module.exports = styling;
+module.exports.pitch = function stylingPitch(request, precedingRequest) {
+  if (this[__dirname] === false) {
+    return;
+  }
+  var childFilename = "styling-output-filename";
+  var outputOptions = {filename: childFilename};
+  var childCompiler = this._compilation.createChildCompiler("styling-compiler", outputOptions);
+  childCompiler.apply(new NodeTemplatePlugin(outputOptions));
+  childCompiler.apply(new LibraryTemplatePlugin(null, "commonjs2"));
+  childCompiler.apply(new NodeTargetPlugin());
+  childCompiler.apply(new SingleEntryPlugin(this.context, "!!" + request));
+  childCompiler.apply(new LimitChunkCountPlugin({ maxChunks: 1 }));
+
+  var subCache = "subcache " + __dirname + " " + request;
+
+  childCompiler.plugin("compilation", function(compilation) {
+    if (compilation.cache) {
+      if(!compilation.cache[subCache])
+        compilation.cache[subCache] = {};
+      compilation.cache = compilation.cache[subCache];
+    }
+  });
+
+  // We set loaderContext[__dirname] = false to indicate we already in
+  // a child compiler so we don't spawn another child compilers from there.
+  childCompiler.plugin("this-compilation", function(compilation) {
+    compilation.plugin("normal-module-loader", function(loaderContext) {
+      loaderContext[__dirname] = false;
+    });
+  });
+
+  var source;
+  childCompiler.plugin("after-compile", function(compilation, callback) {
+    source = compilation.assets[childFilename] && compilation.assets[childFilename].source();
+
+    // Remove all chunk assets
+    compilation.chunks.forEach(function(chunk) {
+      chunk.files.forEach(function(file) {
+        delete compilation.assets[file];
+      });
+    });
+
+    callback();
+  });
+
+  var callback = this.async();
+
+  childCompiler.runAsChild(function(err, entries, compilation) {
+    if (err) {
+      return callback(err);
+    }
+    if (compilation.errors.length > 0) {
+      return callback(compilation.errors[0]);
+    }
+    if (!source) {
+      return callback(new Error("Didn't get a result from child compiler"));
+    }
+    compilation.fileDependencies.forEach(function(dep) {
+      this.addDependency(dep);
+    }, this);
+    compilation.contextDependencies.forEach(function(dep) {
+      this.addContextDependency(dep);
+    }, this);
+    try {
+      var exports = this.exec(source, request);
+      var stylesheet = [];
+      for (var key in exports) {
+        if (exports.hasOwnProperty(key)) {
+          var styling = exports[key];
+          if (Styling.is(styling)) {
+            stylesheet = stylesheet.concat(renderStyling(key, styling));
+          }
+        }
+      }
+      var text = stylesheet.join('\n\n');
+    } catch (e) {
+      return callback(e);
+    }
+    if (text) {
+      callback(null, text);
+    } else {
+      callback();
+    }
+  }.bind(this));
+};
