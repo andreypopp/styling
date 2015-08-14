@@ -3,6 +3,7 @@
   "version": "0.2.0",
   "description": "Style components with JavaScript",
   "main": "index.js",
+  "browser": "browser.js",
   "webpackLoader": "loader.js",
   "author": "Andrey Popp <8mayday@gmail.com>",
   "license": "MIT",

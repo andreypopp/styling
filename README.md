@@ -46,16 +46,21 @@ Usage
 
 Add the following configuration to `webpack.config.js`:
 
+    var styling = require('styling')
+
     module.exports = {
       module: {
         loaders: [
           {
             test: /\.style\.js/,
-            loader: 'style!css!styling!babel'
+            loader: styling('style!css', babel')
           }
         ]
       }
     }
+
+Function `styling` take configures loader and accepts two arguments, one for
+*postloaders* and one for *preloaders*.
 
 Now you can write styles with the full power of JavaScript, `Button.styling.js`:
 
@@ -85,12 +90,15 @@ Styling is compatible with [extract-text-webpack-plugin][] so you can have your
 styles extracted into a separate CSS bundle by Webpack. This is how you
 configure it to do so:
 
+    var styling = require('styling')
+    var ExtractTextWebpackPlugin = require('extract-text-webpack-plugin')
+
     module.exports = {
       module: {
         loaders: [
           {
             test: /\.style\.js/,
-            loader: ExtractTextWebpackPlugin.extract('style', css!styling!babel')
+            loader: styling(ExtractTextWebpackPlugin.extract('style', css'), 'babel')
           }
         ]
       },
