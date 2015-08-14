@@ -6,6 +6,7 @@ var KEY = '@@styling';
 
 function Styling(spec) {
   this[KEY] = spec;
+  this.rules = spec;
 }
 
 Styling.prototype.getSpec = function Styling_getStyle() {
