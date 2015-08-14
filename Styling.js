@@ -2,8 +2,6 @@
  * @copyright 2015, Andrey Popp
  */
 
-var deepmerge = require('deepmerge');
-
 var KEY = '@@styling';
 
 function Styling(spec) {
