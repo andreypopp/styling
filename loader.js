@@ -136,15 +136,6 @@ function produce(loader, request, cb) {
   });
 }
 
-function findInArray(array, func) {
-  for (var i = 0; i < array.length; i++) {
-    if (func(array[i])) {
-      return i;
-    }
-  }
-  return -1;
-}
-
 function getRootCompilation(loader) {
   var compiler = loader._compiler;
   var compilation = loader._compilation;
