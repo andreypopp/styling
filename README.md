@@ -59,7 +59,7 @@ Add the following configuration to `webpack.config.js`:
       }
     }
 
-Function `styling` take configures loader and accepts two arguments, one for
+Function `styling` configures loader and accepts two arguments, one for
 *postloaders* and one for *preloaders*.
 
 Now you can write styles with the full power of JavaScript, `Button.styling.js`:
