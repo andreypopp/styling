@@ -1,6 +1,6 @@
 {
   "name": "styling",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Style components with JavaScript",
   "main": "index.js",
   "browser": "browser.js",
@@ -15,6 +15,5 @@
     "css",
     "style"
   ],
-  "dependencies": {
-  }
+  "dependencies": {}
 }
