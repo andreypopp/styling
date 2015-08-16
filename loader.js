@@ -47,7 +47,7 @@ module.exports.pitch = function stylingPitch(request, precedingRequest, data) {
   }
 };
 
-function produce(loader, request, cb) {
+function produce(loader, request, callback) {
   var outputFilename = "styling-output-filename";
   var outputOptions = {filename: outputFilename};
   var childCompiler = getRootCompilation(loader).createChildCompiler("styling-compiler", outputOptions);
@@ -92,10 +92,6 @@ function produce(loader, request, cb) {
 
     callback();
   });
-
-  function callback(error, result) {
-    cb(error, result);
-  }
 
   childCompiler.runAsChild(function(error, entries, compilation) {
     if (error) {
