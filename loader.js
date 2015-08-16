@@ -25,18 +25,10 @@ module.exports = function styling(content) {
   if (this[__dirname] === false) {
     return '';
   } else if (typeof this[extractTextWebpackPluginKey] === 'function') {
-    var cb = this.async();
-    var request = this.request.split('!').slice(this.loaderIndex + 1).join('!');
-    produce(this, request, function(err, result) {
-      if (err) {
-        cb(err);
-      } else {
-        setCompiledStyling(this, result);
-        cb(null, '');
-      }
-    }.bind(this));
+    return '';
   } else if (this[extractTextWebpackPluginKey] === false) {
-    return getCompiledStyling(this);
+    var request = this.request.split('!').slice(this.loaderIndex + 1).join('!');
+    produce(this, request, this.async());
   }  else {
     return '';
   }
@@ -51,15 +43,14 @@ module.exports.pitch = function stylingPitch(request, precedingRequest, data) {
     // if extract-text-webpack-plugin is active we do all work in a loader phase
     return;
   } else {
-    var cb = this.async();
-    produce(this, request, cb);
+    produce(this, request, this.async());
   }
 };
 
 function produce(loader, request, cb) {
   var outputFilename = "styling-output-filename";
   var outputOptions = {filename: outputFilename};
-  var childCompiler = loader._compilation.createChildCompiler("styling-compiler", outputOptions);
+  var childCompiler = getRootCompilation(loader).createChildCompiler("styling-compiler", outputOptions);
   childCompiler.apply(new NodeTemplatePlugin(outputOptions));
   childCompiler.apply(new LibraryTemplatePlugin(null, "commonjs2"));
   childCompiler.apply(new NodeTargetPlugin());
@@ -144,21 +135,4 @@ function getRootCompilation(loader) {
     compiler = compilation.compiler;
   }
   return compilation;
-}
-
-function setCompiledStyling(loader, styling) {
-  var compilation = getRootCompilation(loader);
-  if (compilation.__stylingCache === undefined) {
-    compilation.__stylingCache = {};
-  }
-  compilation.__stylingCache[loader.request] = styling;
-}
-
-function getCompiledStyling(loader) {
-  var compilation = getRootCompilation(loader);
-  if (compilation.__stylingCache === undefined) {
-    return undefined;
-  } else {
-    return compilation.__stylingCache[loader.request];
-  }
 }
