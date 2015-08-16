@@ -1,7 +1,15 @@
 Styling
 =======
 
-Styling allows to define component styles with the full power of JavaScript.
+Styling is the [Webpack][] based tool to write component styles with the full
+power of JavaScript:
+
+    import styling from 'styling'
+    import {baseColor} from './theme'
+
+    export let button = styling({
+      backgroundColor: baseColor
+    })
 
 Why
 ---
@@ -15,14 +23,18 @@ Why
 * Compatability with the existent CSS tools such as [autoprefixer][] and a ton
   of other [PostCSS][] transforms.
 
+* Compatability with the existent JS tools such as compile-to-js languages
+  (CoffeeScript, TypeScript), type checkers (FlowType), linters (ESLint) and
+  others.
+
 How
 ---
 
-Styling is implemented as a [webpack][] loader which executes JavaScript code to
+Styling is implemented as a [Webpack][] loader which executes JavaScript code to
 produce *styling* objects.
 
 Each styling object is then converted to a [CSS module][] and passed further to
-webpack CSS processing pipeline (usually css-loader and style-loader).
+Webpack CSS processing pipeline (usually css-loader and style-loader).
 
 Consuming styling styles is no different than consuming a CSS module: you get a
 mapping of CSS class names which can be used to style your components.
@@ -109,7 +121,7 @@ configure it to do so:
     }
 
 [npm]: http://npmjs.org
-[webpack]: http://webpack.github.io/
+[Webpack]: http://webpack.github.io/
 [extract-text-webpack-plugin]: https://github.com/webpack/extract-text-webpack-plugin
 [color]: https://www.npmjs.com/package/color
 [CSS module]: https://github.com/css-modules/css-modules
