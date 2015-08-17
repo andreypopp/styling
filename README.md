@@ -65,7 +65,10 @@ Add the following configuration to `webpack.config.js`:
         loaders: [
           {
             test: /\.style\.js/,
-            loader: styling('style!css', babel')
+            loader: styling(
+              ['style', css'], // loaders to execute after styling
+              ['babel']        // loaders to execute before styling
+            )
           }
         ]
       }
@@ -74,7 +77,7 @@ Add the following configuration to `webpack.config.js`:
 Function `styling` configures loader and accepts two arguments, one for
 *postloaders* and one for *preloaders*.
 
-Now you can write styles with the full power of JavaScript, `Button.styling.js`:
+Now you can write styles with the full power of JavaScript, `Button.style.js`:
 
     import styling from 'styling'
 
@@ -89,7 +92,7 @@ Now you can write styles with the full power of JavaScript, `Button.styling.js`:
 
 And consume them, `Button.js`:
 
-    import ButtonStyle from './Button.styling'
+    import ButtonStyle from './Button.style'
 
     export function render() {
       return `<button className="${ButtonStyle.self}">Click!</button>`
