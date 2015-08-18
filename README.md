@@ -3,14 +3,14 @@ Styling
 
 Styling is the [Webpack][] based tool to write component styles with the full
 power of JavaScript:
-
+```js
     import styling from 'styling'
     import {baseColor} from './theme'
 
     export let button = styling({
       backgroundColor: baseColor
     })
-
+```
 Why
 ---
 
@@ -50,14 +50,14 @@ Installation
 ------------
 
 Install from [npm][]:
-
+```bash
     % npm install styling
-
+```
 Usage
 -----
 
 Add the following configuration to `webpack.config.js`:
-
+```js
     var styling = require('styling')
 
     module.exports = {
@@ -73,12 +73,12 @@ Add the following configuration to `webpack.config.js`:
         ]
       }
     }
-
+```
 Function `styling` configures loader and accepts two arguments, one for
 *postloaders* and one for *preloaders*.
 
 Now you can write styles with the full power of JavaScript, `Button.style.js`:
-
+```js
     import styling from 'styling'
 
     export let self = styling({
@@ -89,22 +89,22 @@ Now you can write styles with the full power of JavaScript, `Button.style.js`:
         borderWidth: 100
       }
     })
-
+```
 And consume them, `Button.js`:
-
+```js
     import ButtonStyle from './Button.style'
 
     export function render() {
       return `<button className="${ButtonStyle.self}">Click!</button>`
     }
-
+```
 Usage with Extract Text Webpack plugin
 --------------------------------------
 
 Styling is compatible with [extract-text-webpack-plugin][] so you can have your
 styles extracted into a separate CSS bundle by Webpack. This is how you
 configure it to do so:
-
+```js
     var styling = require('styling')
     var ExtractTextWebpackPlugin = require('extract-text-webpack-plugin')
 
@@ -122,7 +122,7 @@ configure it to do so:
         new ExtractTextWebpackPlugin('bundle.css')
       ]
     }
-
+```
 [npm]: http://npmjs.org
 [Webpack]: http://webpack.github.io/
 [extract-text-webpack-plugin]: https://github.com/webpack/extract-text-webpack-plugin
