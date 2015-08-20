@@ -46,7 +46,6 @@ function renderStyle(name, state, style) {
 }
 
 function renderProp(key, value) {
-  key = key.replace(CAMEL_CASE_TO_DASH_CASE, '$1-$2').toLowerCase();
   value = valueOf(value);
 
   var isNonNumeric = isNaN(value);
@@ -56,6 +55,7 @@ function renderProp(key, value) {
   } else {
     value = value + 'px';
   }
+  key = key.replace(CAMEL_CASE_TO_DASH_CASE, '$1-$2').toLowerCase();
   return key + ': ' + value + ';';
 }
 
