@@ -66,7 +66,7 @@ module.exports = {
       {
         test: /\.style\.js/,
         loader: styling(
-          ['style', css'], // loaders to execute after styling
+          ['style', 'css'], // loaders to execute after styling
           ['babel']        // loaders to execute before styling
         )
       }
@@ -113,7 +113,7 @@ module.exports = {
     loaders: [
       {
         test: /\.style\.js/,
-        loader: styling(ExtractTextWebpackPlugin.extract('style', css'), 'babel')
+        loader: styling(ExtractTextWebpackPlugin.extract('style', 'css'), 'babel')
       }
     ]
   },
