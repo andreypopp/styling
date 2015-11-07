@@ -3,19 +3,18 @@
  */
 
 var Styling       = require('./Styling');
-var renderStyling = require('./renderStyling');
 
 function renderStylingSheet(sheet) {
-  var stylesheet = [];
+  var stylesheet = {};
   for (var key in sheet) {
     if (sheet.hasOwnProperty(key)) {
       var styling = sheet[key];
       if (Styling.is(styling)) {
-        stylesheet = stylesheet.concat(renderStyling(key, styling));
+        stylesheet['.' + key] = styling.getSpec();
       }
     }
   }
-  return stylesheet.join('\n\n');
+  return stylesheet;
 }
 
 module.exports = renderStylingSheet;

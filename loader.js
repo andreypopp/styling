@@ -4,6 +4,8 @@
 
 var path                = require('path');
 var Module              = require('module');
+var postcss             = require('postcss');
+var postcssJS           = require('postcss-js');
 var Styling             = require('./Styling');
 var renderStylingSheet  = require('./renderStylingSheet');
 
@@ -111,14 +113,19 @@ function produce(loader, request, callback) {
     });
     try {
       var exports = loader.exec(source, request);
-      var text = renderStylingSheet(exports);
+      var styles = renderStylingSheet(exports);
+      postcss()
+        .process(styles, {parser: postcssJS})
+        .then(
+          function(result) {
+            callback(null, result.css);
+          },
+          function(e) {
+            callback(e);
+          }
+        );
     } catch (e) {
-      return callback(e);
-    }
-    if (text) {
-      callback(null, text);
-    } else {
-      callback();
+      callback(e);
     }
   });
 }
