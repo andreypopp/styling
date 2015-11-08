@@ -10,5 +10,8 @@ export let icon = styling({
 })
 
 export let caption = styling({
-  fontWeight: 'bold'
+  fontWeight: 'bold',
+  '&:hover': {
+    color: 'blue'
+  }
 })
